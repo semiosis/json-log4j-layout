@@ -48,7 +48,7 @@ public class JSONLayout extends Layout {
         g.writeStringField("level", event.getLevel().toString());
         g.writeNumberField("timestamp", event.timeStamp);
         g.writeStringField("threadName", event.getThreadName());
-        g.writeStringField("message", event.getMessage().toString());
+        g.writeStringField("message", ""+event.getMessage());
     }
 
     private void writeNDCValues(LoggingEvent event, JsonGenerator g) throws IOException {

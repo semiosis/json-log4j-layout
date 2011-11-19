@@ -55,8 +55,14 @@ public class JSONLayoutTest {
 
     @Test
     public void validateBasicLogStructure() {
+        // Test when message is not null
         LoggingEvent event = createDefaultLoggingEvent();
         String logOutput = jsonLayout.format(event);
+        validateBasicLogOutput(logOutput, event);
+        
+        // Test when message is null
+        event = createNullLoggingEvent();
+        logOutput = jsonLayout.format(event);
         validateBasicLogOutput(logOutput, event);
     }
 
@@ -137,12 +143,8 @@ public class JSONLayoutTest {
     }
 
     private void validateMessage(String logOutput, LoggingEvent event) {
-        if (event.getMessage() != null) {
-            String partialOutput = "\"message\":\"" + event.getMessage() + "\"";
-            assertThat(logOutput, containsString(partialOutput));
-        } else {
-            fail("Expected the message to be set in the logging event");
-        }
+        String partialOutput = "\"message\":\"" + event.getMessage() + "\"";
+        assertThat(logOutput, containsString(partialOutput));
     }
 
     private void validateMDCValues(String logOutput) {
@@ -160,9 +162,9 @@ public class JSONLayoutTest {
         partialOutput.add("\"throwable\":\"java.lang.IllegalArgumentException: Test Exception in event");
         partialOutput.add("org.elasticflume.log4j.JSONLayoutTest.createDefaultLoggingEventWithException(JSONLayoutTest.java:");
         partialOutput.add("at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)");
-        partialOutput.add("at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:39");
-        partialOutput.add("at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:25)");
-        partialOutput.add("at java.lang.reflect.Method.invoke(Method.java:597)");
+        partialOutput.add("at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57");
+        partialOutput.add("at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)");
+        partialOutput.add("at java.lang.reflect.Method.invoke(Method.java:616)");
 
         for (String output : partialOutput)
         {
@@ -172,6 +174,10 @@ public class JSONLayoutTest {
 
     private LoggingEvent createDefaultLoggingEvent() {
         return new LoggingEvent("", DEFAULT_LOGGER, Level.INFO, "Hello World", null);
+    }
+
+    private LoggingEvent createNullLoggingEvent() {
+        return new LoggingEvent("", DEFAULT_LOGGER, Level.INFO, null, null);
     }
 
     private LoggingEvent createDefaultLoggingEventWithException() {
